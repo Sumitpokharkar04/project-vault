@@ -1,0 +1,33 @@
+.container{
+    
+    margin-left: 45cap;
+    margin-top: 20vh;
+     height: 50vh;
+     width: 50vw;
+    box-sizing: border-box;
+    border: 2px solid black;
+    align-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    background-color: mediumseagreen
+}
+
+.box{
+    margin-top: 100px;
+    font-size: xx-large;
+    font-weight: 500;
+}
+
+.button{
+    margin:100px
+}
+
+#btn{
+    background-color: green;
+}
+
+label{
+    font-weight: 700;
+    font-size: larger;
+}
