@@ -40,8 +40,6 @@ btn.addEventListener("click", ()=>{
                 document.querySelector('.box').innerText = "Searching for passwords...";
                 resolve();
             }, Math.floor(Math.random() * 6001) + 1000);
-
-
         });
     }
 
