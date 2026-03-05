@@ -1,0 +1,110 @@
+Here we will discuss the problems occured and the resolves we found.
+
+1) Title: Issue with Encoded Song URLs While Fetching MP3 Files
+
+Problem Occurred:
+While fetching song files from the local server (`http://127.0.0.1:3000/song`), the extracted `.mp3` links contained encoded characters like `%5C` in the URL. Example output:
+
+`http://127.0.0.1:3000/%5Csong%5Cfilename.mp3`
+
+The `%5C` represents a **backslash (`\`) encoded in URL format**. This happened because the directory listing generated paths using **Windows-style backslashes (`\`)** instead of standard **URL forward slashes (`/`)**.
+
+Because URLs should use forward slashes, the browser encoded the backslashes, resulting in messy and potentially problematic links.
+
+---
+
+Cause:
+The server returned file paths using Windows-style path separators:
+
+`\song\filename.mp3`
+
+When converted into URLs, these backslashes were encoded as `%5C`.
+
+---
+
+Resolution:
+The issue was resolved by replacing the encoded backslashes in the URLs with forward slashes before storing them in the songs array.
+
+Code Fix:
+
+```javascript
+songs.push(element.href.replaceAll("%5C", "/"));
+```
+
+This converts the encoded path:
+
+`http://127.0.0.1:3000/%5Csong%5Cfilename.mp3`
+
+into the correct format:
+
+`http://127.0.0.1:3000/song/filename.mp3`
+
+---
+
+Final Result:
+After applying the fix, the application correctly retrieves and stores playable `.mp3` song URLs in the `songs` array without encoding issues.
+
+//******************************************************************************************************//
+
+
+2)
+Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(e=>{
+    console.log(e);
+    
+})
+Explaination of this line of code=>
+
+first of all what we are doing here is we are using query selector to select div whose class is (.songList)
+and then we use getElementsByTagName to get all elements who are in "li" tag.
+
+Now one important thing is that this methods like querySelector and getElementsByTagName always give  us 
+HTML collections so we use Array.from to convert html collections into array so we can use methods like
+map,reduce,forEach,forof and other for loops and all other array methods.
+
+//*******************************************************************************************************//
+
+3) Doubt:
+Why does
+`console.log(e.querySelector(".info"));`
+print
+
+`<div> Artemas - i like the way you kiss me (official music video).mp3</div>`
+
+and why does using **`firstChild`** return `#text`, while **`firstElementChild`** returns `<div>`?
+
+---
+
+Answer:
+
+1. `e.querySelector(".info")`
+   This selects the element with class **`info`** inside the `<li>`.
+   Inside `.info` there is a `<div>` containing the song name, so the browser shows that element in the console.
+
+2.Why `firstChild` returns `#text`
+   In the DOM, spaces and line breaks inside HTML are treated as text nodes.
+   Because there is whitespace before the `<div>`, the first node inside `.info` becomes a text node, which appears as:
+
+   `#text`
+
+3. Why `firstElementChild` returns `<div>`
+   `firstElementChild` ignores text nodes and only returns **HTML elements**.
+   Therefore it skips the whitespace text node and returns the first actual element:
+
+   `<div>Song Name</div>`
+
+---
+
+Summary:
+
+| Property            | What it returns                                   |
+| ------------------- | ------------------------------------------------- |
+| `firstChild`        | First **node** (can be text, comment, or element) |
+| `firstElementChild` | First **HTML element only**                       |
+
+So in your case:
+
+ `firstChild` → `#text` (whitespace)
+ `firstElementChild` → `<div>` containing the song name.
+
+
+
