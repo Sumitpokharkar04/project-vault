@@ -106,5 +106,239 @@ So in your case:
  `firstChild` → `#text` (whitespace)
  `firstElementChild` → `<div>` containing the song name.
 
+//*********************************************************************************************************//
+
+**Doubt:**
+How does this code work and what is the execution flow?
+
+```javascript
+Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(e=>{
+    e.addEventListener("click", element=>{
+        console.log(e.querySelector(".info").firstElementChild.innerHTML);
+        playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim())
+    })
+})
+```
+
+---
+
+**Answer (Step-by-Step Flow):**
+
+**1. Select the song list container**
+
+```javascript
+document.querySelector(".songList")
+```
+
+This finds the element with class **`songList`** in the HTML.
+
+---
+
+**2. Get all `<li>` elements (songs)**
+
+```javascript
+.getElementsByTagName("li")
+```
+
+This selects all **list items** inside `.songList`.
+Each `<li>` represents a **song in the playlist**.
+
+---
+
+**3. Convert the collection to an array**
+
+```javascript
+Array.from(...)
+```
+
+`getElementsByTagName()` returns an **HTMLCollection**, not a real array.
+`Array.from()` converts it into a **JavaScript array** so we can use array methods like `forEach()`.
+
+---
+
+**4. Loop through every song**
+
+```javascript
+.forEach(e => { ... })
+```
+
+This runs the function once for **each `<li>` song element**.
+
+Here `e` represents **one song item**.
+
+---
+
+5. Add a click event to each song**
+
+```javascript
+e.addEventListener("click", element => { ... })
+```
+
+This means:
+Whenever the user clicks that song**, run the function inside.
+
+---
+
+6. Get the song name
+```javascript
+e.querySelector(".info").firstElementChild.innerHTML
+```
+
+Flow:
+
+* `e.querySelector(".info")` → finds the `.info` div inside that song
+* `.firstElementChild` → gets the inner `<div>` containing the song name
+* `.innerHTML` → extracts the **song title text**
+
+Example result:
+
+```
+Artemas - i like the way you kiss me (official music video).mp3
+```
+
+---
+
+**7. Clean the text**
+
+```javascript
+.trim()
+```
+
+Removes **extra spaces** at the start or end of the string.
+
+Example:
+
+```
+" Artemas - song.mp3 "
+```
+
+becomes
+
+```
+"Artemas - song.mp3"
+```
+
+---
+
+**8. Play the song**
+
+```javascript
+playMusic(songName)
+```
+
+The cleaned song name is passed to the **`playMusic()` function**, which loads and plays the audio.
+
+---
+
+Overall Flow
+
+1. Find `.songList`
+2. Get all `<li>` songs
+3. Convert them to an array
+4. Loop through each song
+5. Attach a **click listener**
+6. When clicked:
+
+   * extract the song name
+   * clean it
+   * call `playMusic()` to play it
+
+---
+
+Final Behaviour:
+When the user **clicks a song in the list**, the program extracts the song name from the UI and sends it to `playMusic()` to start playing that track.
+
+//***********************************************************************************************************//
+
+Doubt 1:
+Why does `let CurrentSong = new Audio()` not create multiple audio objects?
+
+Answer:
+It creates only one audio object because it is declared outside the function.
+So the object is created only once when the script loads, and every song click just reuses the same audio player.
+
+If it was written like this:
+
+```javascript
+function playMusic(track){
+    let audio = new Audio(track)
+    audio.play()
+}
+```
+
+then every function call would create a new audio object, causing multiple songs to play simultaneously.
+
+Juice:
+
+* Outside function → object created once
+* Inside function → object created every call
+
+---
+
+Doubt 2:
+Why does removing "song/" from this not work?
+
+```javascript
+CurrentSong.src = "/song/" + track
+```
+
+Answer:
+Because the songs are stored inside the song folder.
+So the browser must know the correct path to the file.
+
+Correct path example:
+
+```
+/song/song1.mp3
+```
+
+If you remove "song/":
+
+```javascript
+CurrentSong.src = track
+```
+
+the browser searches:
+
+```
+/song1.mp3
+```
+
+which does not exist, so the audio doesn't play.
+
+Juice:
+`src` must contain the correct folder path to the audio file.
 
 
+//****************************************************************************************************//
+
+Topic: Closures in Event Listeners
+
+Concept:
+A closure in JavaScript happens when a function remembers the variables from the scope in which it was created, even after that outer function has finished executing.
+
+Explanation:
+When we create an event listener inside a function, the listener function remembers the variables that were available when it was created. Even if the outer function finishes executing, those variables stay in memory because the event listener might need them later.
+
+Example:
+
+```javascript
+function main(){
+    let message = "Hello"
+
+    document.querySelector("button").addEventListener("click", ()=>{
+        console.log(message)
+    })
+}
+
+main()
+```
+
+Here the event listener remembers the variable `message`.
+Even after `main()` finishes running, when the button is clicked later, the listener can still access `message`.
+
+Application in Music Player:
+In the music player code, the event listener remembers variables like `playMusic` and `CurrentSong`. So when the user clicks a song later, the listener can still call `playMusic()` and play the track.
+
+Juice:
+A closure allows a function to remember variables from its outer scope even after that outer function has finished executing.

@@ -1,5 +1,6 @@
 console.log("lets write some fucking javascript");
 
+
 async function getSongs()
 {
     //Note - always remember to put await infront of fetch and before parsing.
@@ -27,6 +28,7 @@ async function getSongs()
    
     
 }
+
 async function main() {
     //Get the list of all the songs
 let songs = await getSongs()
@@ -50,8 +52,23 @@ for (const song of songs) {
 also we dont use (.) in getElementById we just name the id in parenthesis ("id") */
 
 
+let CurrentSong = new Audio()
+
+const playMusic=(track)=>{
+    // let audio = new Audio("/song/" + track)
+    console.log(track);
+    
+    CurrentSong.src="/song/"  + track
+    CurrentSong.play()
+}
+
+//Add event listener to every song so after we click it plays
 Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(e=>{
-    console.log(e.querySelector(".info").firstElementChild.innerHTML);
+    e.addEventListener("click",element=>{
+        // console.log(e.querySelector(".info").firstElementChild.innerHTML);
+         playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim())
+    })
+    
     
 })
 
