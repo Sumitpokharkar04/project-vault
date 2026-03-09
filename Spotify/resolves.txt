@@ -345,3 +345,6 @@ A closure allows a function to remember variables from its outer scope even afte
 
 Note:- CurrentSong is a audio element also can be called as htmlmedia elements
 so if we put string in it we cant use event listeners thats why we use src.
+
+Note:- CurrentSong is a audio element also can be called as htmlmedia elements
+so if we put string in it we cant use event listeners thats why we use src.
